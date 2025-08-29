@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Code Runner Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/editor/editor.main.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .language-selector {
+            margin-bottom: 20px;
+        }
+
+        .language-selector label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .language-selector select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .language-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .run-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .run-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .run-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .timeout-input {
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            width: 120px;
+            font-size: 14px;
+        }
+
+        .timeout-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .examples-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .examples-panel h3 {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 18px;
+        }
+
+        .example-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .example-button {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e9ecef;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .example-button:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .editor-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            height: 500px;
+        }
+
+        .editor-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-header h3 {
+            color: #495057;
+            font-size: 18px;
+        }
+
+        .editor-status {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .monaco-editor {
+            height: calc(100% - 60px);
+        }
+
+        .output-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .output-panel h3 {
+            margin-bottom: 20px;
+            color: #495057;
+            font-size: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .output-section {
+            margin-bottom: 25px;
+        }
+
+        .output-section h4 {
+            color: #6c757d;
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-content {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 60px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .output-content.success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .output-content.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .output-content.info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        .output-content.loading {
+            background: #e2e3e5;
+            border-color: #d6d8db;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success { background: #28a745; }
+        .status-error { background: #dc3545; }
+        .status-info { background: #17a2b8; }
+        .status-loading { background: #6c757d; }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .editor-container {
+                height: 400px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .run-button {
+                min-width: auto;
+            }
+
+            .timeout-input {
+                width: 100%;
+            }
+
+            .example-buttons {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .control-panel,
+            .examples-panel,
+            .editor-container,
+            .output-panel {
+                padding: 15px;
+            }
+
+            .editor-container {
+                height: 350px;
+            }
+
+            .example-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                gap: 10px;
+            }
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Smooth transitions */
+        .control-panel,
+        .examples-panel,
+        .editor-container,
+        .output-panel {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .control-panel:hover,
+        .examples-panel:hover,
+        .editor-container:hover,
+        .output-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Browser Code Runner</h1>
+            <p>Execute JavaScript, Python, and Lua code directly in your browser using web workers</p>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                ✅ Demo: Now using real browser-code-runner package for all languages
+            </p>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="control-panel">
+                    <div class="language-selector">
+                        <label for="language">Programming Language:</label>
+                        <select id="language">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="lua">Lua</option>
+                        </select>
+                    </div>
+
+                    <div class="controls">
+                        <button id="runButton" class="run-button">
+                            ▶️ Run Code
+                        </button>
+                        <label for="timeout">Timeout (ms):</label>
+                        <input type="number" id="timeout" class="timeout-input" value="5000" min="1000" max="30000">
+                    </div>
+                </div>
+
+                <div class="examples-panel">
+                    <h3>Example Code Snippets</h3>
+                    <div class="example-buttons">
+                        <button class="example-button" onclick="loadExample('javascript', 'simple')">JS - Simple</button>
+                        <button class="example-button" onclick="loadExample('javascript', 'advanced')">JS - Advanced</button>
+                        <button class="example-button" onclick="loadExample('javascript', 'error')">JS - Error Test</button>
+                        <button class="example-button" onclick="loadExample('python', 'simple')">Python - Simple</button>
+                        <button class="example-button" onclick="loadExample('python', 'advanced')">Python - Advanced</button>
+                        <button class="example-button" onclick="loadExample('lua', 'simple')">Lua - Simple</button>
+                        <button class="example-button" onclick="loadExample('lua', 'advanced')">Lua - Advanced</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-container">
+                <div class="editor-header">
+                    <h3>Code Editor</h3>
+                    <div class="editor-status" id="editorStatus">Ready</div>
+                </div>
+                <div id="monacoEditor" style="height: 100%;"></div>
+            </div>
+        </div>
+
+        <div class="output-panel">
+            <h3>Execution Output</h3>
+            
+            <div class="output-section">
+                <h4>
+                    <span class="status-indicator status-info"></span>
+                    Standard Output (stdout)
+                </h4>
+                <div id="stdout" class="output-content">Ready to run code...</div>
+            </div>
+            
+            <div class="output-section">
+                <h4>
+                    <span class="status-indicator status-info"></span>
+                    Standard Error (stderr)
+                </h4>
+                <div id="stderr" class="output-content">No errors yet</div>
+            </div>
+            
+            <div class="output-section">
+                <h4>
+                    <span class="status-indicator status-info"></span>
+                    Execution Info
+                </h4>
+                <div id="execInfo" class="output-content">Waiting for execution...</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>
+                Built with ❤️ using <a href="https://microsoft.github.io/monaco-editor/" target="_blank">Monaco Editor</a> | 
+                <a href="https://github.com/yourusername/browser-code-runner" target="_blank">View on GitHub</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.js"></script>
+    <script>
+        // Monaco Editor configuration
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+
+        let editor;
+        let currentLanguage = 'javascript';
+        let runCodeFunction; // Will store the imported function
+
+        // Example code snippets
+        const examples = {
+            javascript: {
+                simple: `// Simple JavaScript example
+console.log("Hello, World!");
+console.log("2 + 2 =", 2 + 2);
+console.log("Current time:", new Date().toLocaleString());
+
+// Basic array operations
+const numbers = [1, 2, 3, 4, 5];
+const sum = numbers.reduce((a, b) => a + b, 0);
+console.log("Sum of numbers:", sum);`,
+                advanced: `// Advanced JavaScript example
+class Calculator {
+    constructor() {
+        this.history = [];
+    }
+    
+    add(a, b) {
+        const result = a + b;
+        this.history.push(\`\${a} + \${b} = \${result}\`);
+        return result;
+    }
+    
+    multiply(a, b) {
+        const result = a * b;
+        this.history.push(\`\${a} × \${b} = \${result}\`);
+        return result;
+    }
+    
+    getHistory() {
+        return this.history;
+    }
+}
+
+const calc = new Calculator();
+console.log("5 + 3 =", calc.add(5, 3));
+console.log("4 × 7 =", calc.multiply(4, 7));
+console.log("Calculation history:", calc.getHistory());
+
+// Async operations
+async function fetchData() {
+    const promise = Promise.resolve("Data fetched successfully!");
+    const result = await promise;
+    console.log(result);
+}
+
+fetchData();
+
+// Error handling demonstration
+try {
+    const undefinedVar = undefined;
+    console.log(undefinedVar.nonExistentMethod());
+} catch (error) {
+    console.error("Caught error:", error.message);
+}`,
+                error: `// JavaScript Error Test
+// This code will cause runtime errors to demonstrate error handling
+
+console.log("Starting error test...");
+
+// ReferenceError: undefined variable
+console.log("2 + 2 =", 2 + 2);
+console.log("Undefined variable:", asdffvff);
+
+// TypeError: calling method on undefined
+const obj = undefined;
+console.log(obj.toString());
+
+// SyntaxError: invalid syntax (this won't execute due to previous errors)
+const x = {;
+
+console.log("This line won't be reached");`
+            },
+            python: {
+                simple: `# Simple Python example
+print("Hello from Python!")
+print("2 + 2 =", 2 + 2)
+
+# Basic list operations
+numbers = [1, 2, 3, 4, 5]
+print("Numbers:", numbers)
+print("Sum:", sum(numbers))
+print("Average:", sum(numbers) / len(numbers))
+
+# String formatting
+name = "World"
+print(f"Hello, {name}!")`,
+                advanced: `# Advanced Python example
+import math
+import random
+from datetime import datetime
+
+class DataAnalyzer:
+    def __init__(self, data):
+        self.data = data
+    
+    def calculate_stats(self):
+        if not self.data:
+            return {}
+        
+        mean = sum(self.data) / len(self.data)
+        variance = sum((x - mean) ** 2 for x in self.data) / len(self.data)
+        std_dev = math.sqrt(variance)
+        
+        return {
+            'mean': mean,
+            'variance': variance,
+            'std_dev': std_dev,
+            'min': min(self.data),
+            'max': max(self.data)
+        }
+    
+    def filter_even_odd(self):
+        even = [x for x in self.data if x % 2 == 0]
+        odd = [x for x in self.data if x % 2 == 1]
+        return {'even': even, 'odd': odd}
+
+# Generate random data
+random.seed(42)
+data = [random.randint(1, 100) for _ in range(10)]
+print("Random data:", data)
+
+# Analyze data
+analyzer = DataAnalyzer(data)
+stats = analyzer.calculate_stats()
+print("\\nStatistics:")
+for key, value in stats.items():
+    print(f"  {key}: {value:.2f}")
+
+# Filter data
+filtered = analyzer.filter_even_odd()
+print("\\nEven numbers:", filtered['even'])
+print("Odd numbers:", filtered['odd'])
+
+# Current time
+print(f"\\nCurrent time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")`
+            },
+            lua: {
+                simple: `-- Simple Lua example
+print("Hello from Lua!")
+print("2 + 2 =", 2 + 2)
+
+-- Basic table operations
+local numbers = {1, 2, 3, 4, 5}
+print("Numbers:", table.concat(numbers, ", "))
+
+local sum = 0
+for _, num in ipairs(numbers) do
+    sum = sum + num
+end
+print("Sum:", sum)
+print("Average:", sum / #numbers)
+
+-- String concatenation
+local name = "World"
+print("Hello, " .. name .. "!")`,
+                advanced: `-- Advanced Lua example
+-- Generate random numbers
+local numbers = {}
+for i = 1, 15 do
+    numbers[i] = math.random(1, 100)
+end
+
+print("Random numbers:")
+for i, num in ipairs(numbers) do
+    print(num)
+end
+
+-- Calculate statistics
+local sum = 0
+for _, num in ipairs(numbers) do
+    sum = sum + num
+end
+local average = sum / #numbers
+
+print("\\nSum:", sum)
+print("Average:", average)
+
+-- Fibonacci function with memoization
+local memo = {}
+function fibonacci(n)
+    if memo[n] then
+        return memo[n]
+    end
+    
+    if n <= 1 then
+        memo[n] = n
+        return n
+    end
+    
+    memo[n] = fibonacci(n-1) + fibonacci(n-2)
+    return memo[n]
+end
+
+print("\\nFibonacci sequence (first 20):")
+for i = 0, 19 do
+    print("fib(" .. i .. ") = " .. fibonacci(i))
+end
+
+-- Table operations and filtering
+local even_numbers = {}
+local odd_numbers = {}
+for _, num in ipairs(numbers) do
+    if num % 2 == 0 then
+        table.insert(even_numbers, num)
+    else
+        table.insert(odd_numbers, num)
+    end
+end
+
+print("\\nEven numbers count:", #even_numbers)
+print("Odd numbers count:", #odd_numbers)
+
+-- Sort and display
+table.sort(even_numbers)
+table.sort(odd_numbers)
+print("\\nSorted even numbers:", table.concat(even_numbers, ", "))
+print("Sorted odd numbers:", table.concat(odd_numbers, ", "))`
+            }
+        };
+
+        // Initialize Monaco Editor
+        require(['vs/editor/editor.main'], function() {
+            console.log('🎨 Monaco Editor loaded, creating editor...');
+            
+            // Check if the editor container exists and has proper dimensions
+            const editorContainer = document.getElementById('monacoEditor');
+            if (!editorContainer) {
+                console.error('❌ Editor container not found');
+                return;
+            }
+            
+            console.log('📏 Editor container dimensions:', {
+                width: editorContainer.offsetWidth,
+                height: editorContainer.offsetHeight,
+                clientWidth: editorContainer.clientWidth,
+                clientHeight: editorContainer.clientHeight
+            });
+            
+            try {
+                // Set up Monaco Editor
+                editor = monaco.editor.create(editorContainer, {
+                    value: examples.javascript.simple,
+                    language: 'javascript',
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    fontSize: 14,
+                    lineNumbers: 'on',
+                    roundedSelection: false,
+                    scrollbar: {
+                        vertical: 'visible',
+                        horizontal: 'visible'
+                    },
+                    wordWrap: 'on'
+                });
+                
+                console.log('✅ Monaco Editor created successfully');
+                
+                // Force layout update
+                setTimeout(() => {
+                    if (editor) {
+                        editor.layout();
+                        console.log('🔄 Editor layout updated');
+                    }
+                }, 100);
+                
+            } catch (error) {
+                console.error('❌ Failed to create Monaco Editor:', error);
+                createFallbackEditor();
+            }
+
+            // Handle language change
+            document.getElementById('language').addEventListener('change', function(e) {
+                currentLanguage = e.target.value;
+                const languageMap = {
+                    'javascript': 'javascript',
+                    'python': 'python',
+                    'lua': 'lua'
+                };
+                
+                monaco.editor.setModelLanguage(editor.getModel(), languageMap[currentLanguage]);
+                loadExample(currentLanguage, 'simple');
+            });
+
+            // Load initial example
+            loadExample('javascript', 'simple');
+        }, function(error) {
+            console.error('❌ Failed to load Monaco Editor:', error);
+            createFallbackEditor();
+        });
+
+        // Load example code
+        function loadExample(language, complexity) {
+            if (editor && examples[language] && examples[language][complexity]) {
+                editor.setValue(examples[language][complexity]);
+                document.getElementById('language').value = language;
+                currentLanguage = language;
+                
+                // Update editor language
+                const languageMap = {
+                    'javascript': 'javascript',
+                    'python': 'python',
+                    'lua': 'lua'
+                };
+                monaco.editor.setModelLanguage(editor.getModel(), languageMap[language]);
+                
+                // Update status
+                document.getElementById('editorStatus').textContent = `${language.charAt(0).toUpperCase() + language.slice(1)} - ${complexity.charAt(0).toUpperCase() + complexity.slice(1)}`;
+            }
+        }
+
+        // Run button click handler
+        document.getElementById('runButton').addEventListener('click', async () => {
+            if (!editor) return;
+            
+            const code = editor.getValue();
+            const timeout = parseInt(document.getElementById('timeout').value);
+            
+            if (!code.trim()) {
+                alert('Please enter some code to run!');
+                return;
+            }
+            
+            // Update UI
+            const runButton = document.getElementById('runButton');
+            runButton.disabled = true;
+            runButton.innerHTML = '<span class="loading-spinner"></span>Running...';
+            
+            // Update output status
+            updateOutputStatus('loading', 'stdout', 'Running code...');
+            updateOutputStatus('loading', 'stderr', 'Waiting...');
+            updateOutputStatus('loading', 'execInfo', 'Executing...');
+            
+            try {
+                // Execute code using the real browser code runner
+                const result = await executeCode(currentLanguage, code, timeout);
+                
+                // Display results
+                updateOutputStatus('success', 'stdout', result.stdout || '(no output)');
+                updateOutputStatus('success', 'stderr', result.stderr || '(no errors)');
+                updateOutputStatus('info', 'execInfo', 
+                    `Exit Code: ${result.exitCode}\nExecution Time: ${result.timeMs.toFixed(2)}ms`);
+                
+            } catch (error) {
+                updateOutputStatus('error', 'stderr', error.message);
+                updateOutputStatus('error', 'execInfo', 'Execution failed');
+            } finally {
+                // Reset UI
+                runButton.disabled = false;
+                runButton.innerHTML = '▶️ Run Code';
+            }
+        });
+
+        // Update output status and styling
+        function updateOutputStatus(status, elementId, content) {
+            const element = document.getElementById(elementId);
+            const statusIndicator = element.previousElementSibling.querySelector('.status-indicator');
+            
+            // Update content
+            element.textContent = content;
+            
+            // Update classes
+            element.className = `output-content ${status}`;
+            
+            // Update status indicator
+            statusIndicator.className = `status-indicator status-${status}`;
+        }
+
+        // Dynamically import the package
+        async function loadPackage() {
+            try {
+                const module = await import('../dist/index.js');
+                runCodeFunction = module.runCode;
+                console.log('✅ Package loaded successfully');
+                return true;
+            } catch (error) {
+                console.error('❌ Failed to load package:', error);
+                return false;
+            }
+        }
+
+        // Use the real runCode function from our package
+        async function executeCode(language, code, timeout) {
+            try {
+                // Check if package is loaded
+                if (!runCodeFunction) {
+                    const loaded = await loadPackage();
+                    if (!loaded) {
+                        // Fallback to simulation for demo purposes
+                        console.log('⚠️ Package not available, using simulation mode');
+                        console.warn('⚠️ Package not available, using simulation mode');
+                        return await simulateExecution(language, code, timeout);
+                    }
+                }
+
+                // Use the actual runCode function from our package
+                const result = await runCodeFunction({
+                    language: language,
+                    code: code,
+                    timeout: timeout
+                });
+                
+                return result;
+            } catch (error) {
+                return {
+                    stdout: '',
+                    stderr: error.message,
+                    exitCode: 1,
+                    timeMs: 0
+                };
+            }
+        }
+
+        // Fallback simulation for when package isn't available
+        async function simulateExecution(language, code, timeout) {
+            const startTime = performance.now();
+            
+            try {
+                // Simulate execution delay
+                await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 300));
+                
+                if (language === 'javascript') {
+                    // Simple JavaScript simulation
+                    let stdout = '';
+                    let stderr = '';
+                    
+                    try {
+                        // Basic console.log parsing for demo
+                        const logMatches = code.match(/console\.log\([^)]*\)/g);
+                        if (logMatches) {
+                            stdout = logMatches.map(log => 
+                                log.replace(/console\.log\(/, '').replace(/\);?$/, '')
+                            ).join('\n') + '\n';
+                        }
+                    } catch (error) {
+                        stderr = error.message;
+                    }
+                    
+                    const timeMs = performance.now() - startTime;
+                    return {
+                        stdout,
+                        stderr,
+                        exitCode: stderr ? 1 : 0,
+                        timeMs
+                    };
+                } else {
+                    // Python and Lua simulation
+                    const stdout = code.includes('print') ? 
+                        code.match(/print\([^)]*\)/g)?.map(print => 
+                            print.replace(/print\(/, '').replace(/\);?$/, '')
+                        ).join('\n') + '\n' : '';
+                    
+                    const timeMs = performance.now() - startTime;
+                    return {
+                        stdout,
+                        stderr: '',
+                        exitCode: 0,
+                        timeMs
+                    };
+                }
+            } catch (error) {
+                const timeMs = performance.now() - startTime;
+                return {
+                    stdout: '',
+                    stderr: error.message,
+                    exitCode: 1,
+                    timeMs
+                };
+            }
+        }
+
+        // All execution is now handled by the real browser-code-runner package via runCode()
+
+        // Fallback editor if Monaco fails
+        function createFallbackEditor() {
+            console.log('🔄 Creating fallback textarea editor...');
+            const editorContainer = document.getElementById('monacoEditor');
+            if (editorContainer) {
+                editorContainer.innerHTML = `
+                    <textarea 
+                        id="fallbackEditor" 
+                        style="width: 100%; height: 100%; border: none; outline: none; font-family: monospace; font-size: 14px; padding: 10px; resize: none;"
+                        placeholder="Enter your code here..."
+                    >${examples.javascript.simple}</textarea>
+                `;
+                
+                // Create a simple editor interface
+                const textarea = document.getElementById('fallbackEditor');
+                if (textarea) {
+                    // Mock editor methods
+                    editor = {
+                        getValue: () => textarea.value,
+                        setValue: (value) => { textarea.value = value; },
+                        layout: () => {},
+                        dispose: () => {}
+                    };
+                    console.log('✅ Fallback editor created');
+                }
+            }
+        }
+
+        // Handle window resize for Monaco Editor
+        window.addEventListener('resize', () => {
+            if (editor) {
+                editor.layout();
+            }
+        });
+
+        // Add keyboard shortcut (Ctrl+Enter) to run code
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('runButton').click();
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,62 @@
+{
+  "name": "browser-code-runner",
+  "version": "1.0.0",
+  "description": "A unified API to execute different programming languages in the browser using web workers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/build.js",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:build": "node scripts/test-build.js",
+    "build:demo": "node scripts/build-demo.js",
+    "demo": "npx http-server demo -p 8080 -o",
+    "demo:build": "npm run build:demo && npm run demo",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "prepublishOnly": "npm run build && npm run test"
+  },
+  "keywords": [
+    "code-runner",
+    "web-workers",
+    "python",
+    "javascript",
+    "lua",
+    "browser",
+    "pyodide",
+    "fengari"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "pyodide": "^0.25.0",
+    "fengari": "^0.1.4",
+    "monaco-editor": "^0.45.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.36.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "prettier": "^2.5.1",
+    "ts-jest": "^29.1.0",
+    "typescript": "^4.1.2"
+  },
+  "peerDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/browser-code-runner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/browser-code-runner/issues"
+  },
+  "homepage": "https://github.com/yourusername/browser-code-runner#readme"
+} 
