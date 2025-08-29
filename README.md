@@ -88,6 +88,7 @@ interface RunCodeOptions {
   stdin?: string;
   timeout?: number; // Default: 5000ms
 }
+
 ```
 
 #### Returns
