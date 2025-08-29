@@ -2,6 +2,8 @@
 
 This is an interactive demo of the Browser Code Runner package, showcasing how to execute JavaScript, Python, and Lua code directly in the browser using web workers.
 
+**🎉 Now using the published npm package from CDN!**
+
 ## 🚀 Features
 
 - **Monaco Editor**: Professional code editor with syntax highlighting
@@ -10,6 +12,22 @@ This is an interactive demo of the Browser Code Runner package, showcasing how t
 - **Real-time Output**: See execution results immediately
 - **Example Code**: Pre-built examples for each language
 - **GitHub Pages Ready**: Automatically deploys to GitHub Pages
+- **Published Package**: Uses the real `browser-code-runner` npm package from CDN
+
+## 📦 Published Package Integration
+
+This demo now uses the **published npm package** instead of local builds:
+
+- **Package**: [browser-code-runner@1.0.0](https://www.npmjs.com/package/browser-code-runner)
+- **CDN**: `https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js`
+- **Fallback**: Local package if CDN fails
+- **Benefits**: Always uses the latest published version, no local build required
+
+### How It Works
+1. **Primary**: Loads from CDN (jsDelivr)
+2. **Fallback**: If CDN fails, falls back to local package
+3. **Real-time**: Uses actual published package functionality
+4. **Versioned**: Pinned to specific version (1.0.0)
 
 ## 🖥️ Running Locally
 
@@ -22,10 +40,7 @@ This is an interactive demo of the Browser Code Runner package, showcasing how t
 # Install dependencies
 npm install
 
-# Build the package and prepare demo
-npm run build:demo
-
-# Serve the demo locally
+# Serve the demo locally (no build required!)
 npm run demo
 ```
 
@@ -33,11 +48,13 @@ The demo will open automatically in your browser at `http://localhost:8080`.
 
 ### Alternative Commands
 ```bash
-# Build and serve in one command
-npm run demo:build
-
-# Just serve the demo (if already built)
+# Serve the demo directly (if you have http-server installed)
 npx http-server demo -p 8080 -o
+
+# Or use any static file server
+python3 -m http.server 8080
+# or
+php -S localhost:8080
 ```
 
 ## 🌐 GitHub Pages Deployment
@@ -47,7 +64,7 @@ This demo is automatically configured for GitHub Pages deployment.
 ### Automatic Deployment
 1. Push your code to the `main` or `master` branch
 2. GitHub Actions will automatically build and deploy
-3. The demo will be available at `https://yourusername.github.io/your-repo-name/`
+3. The demo will be available at `https://honeycoder96.github.io/browser-c`
 
 ### Manual Deployment
 If you prefer manual deployment:
@@ -167,6 +184,6 @@ This demo is part of the Browser Code Runner package and is licensed under the M
 ## 🔗 Links
 
 - **Package**: [npmjs.com/package/browser-code-runner](https://npmjs.com/package/browser-code-runner)
-- **Repository**: [github.com/yourusername/browser-code-runner](https://github.com/yourusername/browser-code-runner)
+- **Repository**: [github.com/honeycoder96/browser-code-runner](https://github.com/honeycoder96/browser-code-runner)
 - **Monaco Editor**: [microsoft.github.io/monaco-editor](https://microsoft.github.io/monaco-editor)
 - **GitHub Pages**: [pages.github.com](https://pages.github.com) 

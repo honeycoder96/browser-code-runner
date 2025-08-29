@@ -43,7 +43,7 @@ console.log(result);
 
 Experience the Browser Code Runner in action with our interactive demo:
 
-- **🌐 Live Demo**: [View Demo](https://yourusername.github.io/browser-code-runner/)
+- **🌐 Live Demo**: [View Demo](https://honeycoder96.github.io/browser-code-runner/)
 - **📱 Mobile Responsive**: Works perfectly on all devices
 - **🎨 Monaco Editor**: Professional code editing experience
 - **🚀 Real-time Execution**: See results immediately
@@ -318,9 +318,9 @@ MIT License - see LICENSE file for details.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/browser-code-runner/issues)
-- **Documentation**: [GitHub Wiki](https://github.com/yourusername/browser-code-runner/wiki)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/browser-code-runner/discussions)
+- **Issues**: [GitHub Issues](https://github.com/honeycoder96/browser-code-runner/issues)
+- **Documentation**: [GitHub Wiki](https://github.com/honeycoder96/browser-code-runner/wiki)
+- **Discussions**: [GitHub Discussions](https://github.com/honeycoder96/browser-code-runner/discussions)
 
 ## Acknowledgments
 

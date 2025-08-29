@@ -53,10 +53,10 @@
   "peerDependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/browser-code-runner.git"
+    "url": "https://github.com/honeycoder96/browser-code-runner.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/browser-code-runner/issues"
+    "url": "https://github.com/honeycoder96/browser-code-runner/issues"
   },
-  "homepage": "https://github.com/yourusername/browser-code-runner#readme"
+  "homepage": "https://github.com/honeycoder96/browser-code-runner#readme"
 } 

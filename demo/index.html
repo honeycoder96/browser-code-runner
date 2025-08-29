@@ -405,7 +405,7 @@
             <h1>🚀 Browser Code Runner</h1>
             <p>Execute JavaScript, Python, and Lua code directly in your browser using web workers</p>
             <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
-                ✅ Demo: Now using real browser-code-runner package for all languages
+                ✅ Demo: Now using <strong>published npm package</strong> from CDN: <a href="https://www.npmjs.com/package/browser-code-runner" target="_blank" style="color: #fff; text-decoration: underline;">browser-code-runner@1.0.0</a>
             </p>
         </div>
 
@@ -484,7 +484,8 @@
         <div class="footer">
             <p>
                 Built with ❤️ using <a href="https://microsoft.github.io/monaco-editor/" target="_blank">Monaco Editor</a> | 
-                <a href="https://github.com/yourusername/browser-code-runner" target="_blank">View on GitHub</a>
+                <a href="https://github.com/honeycoder96/browser-code-runner" target="_blank">View on GitHub</a> | 
+                <a href="https://www.npmjs.com/package/browser-code-runner" target="_blank">View on NPM</a>
             </p>
         </div>
     </div>
@@ -496,7 +497,11 @@
 
         let editor;
         let currentLanguage = 'javascript';
-        let runCodeFunction; // Will store the imported function
+        let runCodeFunction; // Will store the imported function from the published npm package
+        
+        // This demo now uses the published browser-code-runner package from CDN
+        // Package: https://www.npmjs.com/package/browser-code-runner
+        // CDN: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js
 
         // Example code snippets
         const examples = {
@@ -869,16 +874,28 @@ print("Sorted odd numbers:", table.concat(odd_numbers, ", "))`
             statusIndicator.className = `status-indicator status-${status}`;
         }
 
-        // Dynamically import the package
+        // Load the published package from CDN
         async function loadPackage() {
             try {
-                const module = await import('../dist/index.js');
+                // Use the published package from CDN
+                const module = await import('https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js');
                 runCodeFunction = module.runCode;
-                console.log('✅ Package loaded successfully');
+                console.log('✅ Published package loaded successfully from CDN');
+                console.log('📦 Package version: 1.0.0');
+                console.log('🌐 CDN URL: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js');
                 return true;
             } catch (error) {
-                console.error('❌ Failed to load package:', error);
-                return false;
+                console.error('❌ Failed to load published package:', error);
+                // Fallback to local package if CDN fails
+                try {
+                    const localModule = await import('../dist/index.js');
+                    runCodeFunction = localModule.runCode;
+                    console.log('✅ Local package loaded as fallback');
+                    return true;
+                } catch (localError) {
+                    console.error('❌ Failed to load local package too:', localError);
+                    return false;
+                }
             }
         }
 
