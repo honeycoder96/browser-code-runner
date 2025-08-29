@@ -405,7 +405,7 @@
             <h1>🚀 Browser Code Runner</h1>
             <p>Execute JavaScript, Python, and Lua code directly in your browser using web workers</p>
             <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
-                ✅ Demo: Now using <strong>published npm package</strong> from CDN: <a href="https://www.npmjs.com/package/browser-code-runner" target="_blank" style="color: #fff; text-decoration: underline;">browser-code-runner@1.0.1</a>
+                ✅ Demo: Using <strong>Vite-built bundles</strong> from CDN: <a href="https://www.npmjs.com/package/browser-code-runner" target="_blank" style="color: #fff; text-decoration: underline;">browser-code-runner@1.0.2</a>
             </p>
         </div>
 
@@ -499,9 +499,10 @@
         let currentLanguage = 'javascript';
         let runCodeFunction; // Will store the imported function from the published npm package
         
-        // This demo now uses the published browser-code-runner package from CDN
+        // This demo now uses Vite-built bundles from CDN
         // Package: https://www.npmjs.com/package/browser-code-runner
-        // CDN: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.1/dist/index.js
+        // ES Module: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.2/dist/browser-code-runner.es.js
+        // UMD Bundle: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.2/dist/browser-code-runner.umd.js
 
         // Example code snippets
         const examples = {
@@ -874,27 +875,37 @@ print("Sorted odd numbers:", table.concat(odd_numbers, ", "))`
             statusIndicator.className = `status-indicator status-${status}`;
         }
 
-        // Load the published package from CDN
+        // Load the package from CDN (Vite-built bundle)
         async function loadPackage() {
             try {
-                // Use the published package from CDN
-                const module = await import('https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.1/dist/index.js');
+                // Use the Vite-built ES module bundle from CDN
+                const module = await import('https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.2/dist/browser-code-runner.es.js');
                 runCodeFunction = module.runCode;
-                console.log('✅ Published package loaded successfully from CDN');
-                console.log('📦 Package version: 1.0.1');
-                console.log('🌐 CDN URL: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.1/dist/index.js');
+                console.log('✅ Vite-built package loaded successfully from CDN');
+                console.log('📦 Package version: 1.0.2 (ES module)');
+                console.log('🌐 CDN URL: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.2/dist/browser-code-runner.es.js');
                 return true;
             } catch (error) {
-                console.error('❌ Failed to load published package:', error);
-                // Fallback to local package if CDN fails
+                console.error('❌ Failed to load ES module from CDN:', error);
+                // Fallback to UMD bundle
                 try {
-                    const localModule = await import('../dist/index.js');
-                    runCodeFunction = localModule.runCode;
-                    console.log('✅ Local package loaded as fallback');
+                    const umdModule = await import('https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.2/dist/browser-code-runner.umd.js');
+                    runCodeFunction = umdModule.runCode;
+                    console.log('✅ UMD bundle loaded successfully from CDN');
+                    console.log('📦 Package version: 1.0.2 (UMD)');
                     return true;
-                } catch (localError) {
-                    console.error('❌ Failed to load local package too:', localError);
-                    return false;
+                } catch (umdError) {
+                    console.error('❌ Failed to load UMD bundle from CDN:', umdError);
+                    // Final fallback to local package
+                    try {
+                        const localModule = await import('../dist/index.js');
+                        runCodeFunction = localModule.runCode;
+                        console.log('✅ Local package loaded as fallback');
+                        return true;
+                    } catch (localError) {
+                        console.error('❌ Failed to load local package too:', localError);
+                        return false;
+                    }
                 }
             }
         }

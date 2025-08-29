@@ -1,8 +1,11 @@
 {
   "name": "browser-code-runner",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A unified API to execute different programming languages in the browser using web workers",
   "main": "dist/index.js",
+  "module": "dist/browser-code-runner.es.js",
+  "unpkg": "dist/browser-code-runner.umd.js",
+  "jsdelivr": "dist/browser-code-runner.umd.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -10,6 +13,8 @@
   ],
   "scripts": {
     "build": "tsc && node scripts/build.js",
+    "build:vite": "vite build",
+    "build:all": "npm run build && npm run build:vite",
     "dev": "tsc --watch",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -20,7 +25,7 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write src/**/*.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build:all"
   },
   "keywords": [
     "code-runner",
@@ -35,12 +40,13 @@
   "author": "Honey Sharma <honey.singhroi@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "pyodide": "^0.25.0",
     "fengari": "^0.1.4",
-    "monaco-editor": "^0.45.0"
+    "monaco-editor": "^0.45.0",
+    "pyodide": "^0.25.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
+    "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.36.0",
@@ -48,9 +54,9 @@
     "jest-environment-jsdom": "^29.5.0",
     "prettier": "^2.5.1",
     "ts-jest": "^29.1.0",
-    "typescript": "^4.1.2"
+    "typescript": "^4.1.2",
+    "vite": "^6.3.5"
   },
-  "peerDependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/honeycoder96/browser-code-runner.git"
@@ -68,4 +74,4 @@
     "last 2 versions",
     "not dead"
   ]
-} 
+}
