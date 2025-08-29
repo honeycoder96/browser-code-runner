@@ -18,8 +18,8 @@ This is an interactive demo of the Browser Code Runner package, showcasing how t
 
 This demo now uses the **published npm package** instead of local builds:
 
-- **Package**: [browser-code-runner@1.0.0](https://www.npmjs.com/package/browser-code-runner)
-- **CDN**: `https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js`
+- **Package**: [browser-code-runner@1.0.1](https://www.npmjs.com/package/browser-code-runner)
+- **CDN**: `https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.1/dist/index.js`
 - **Fallback**: Local package if CDN fails
 - **Benefits**: Always uses the latest published version, no local build required
 
@@ -27,7 +27,7 @@ This demo now uses the **published npm package** instead of local builds:
 1. **Primary**: Loads from CDN (jsDelivr)
 2. **Fallback**: If CDN fails, falls back to local package
 3. **Real-time**: Uses actual published package functionality
-4. **Versioned**: Pinned to specific version (1.0.0)
+4. **Versioned**: Pinned to specific version (1.0.1)
 
 ## 🖥️ Running Locally
 

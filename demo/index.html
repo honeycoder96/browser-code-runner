@@ -405,7 +405,7 @@
             <h1>🚀 Browser Code Runner</h1>
             <p>Execute JavaScript, Python, and Lua code directly in your browser using web workers</p>
             <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
-                ✅ Demo: Now using <strong>published npm package</strong> from CDN: <a href="https://www.npmjs.com/package/browser-code-runner" target="_blank" style="color: #fff; text-decoration: underline;">browser-code-runner@1.0.0</a>
+                ✅ Demo: Now using <strong>published npm package</strong> from CDN: <a href="https://www.npmjs.com/package/browser-code-runner" target="_blank" style="color: #fff; text-decoration: underline;">browser-code-runner@1.0.1</a>
             </p>
         </div>
 
@@ -501,7 +501,7 @@
         
         // This demo now uses the published browser-code-runner package from CDN
         // Package: https://www.npmjs.com/package/browser-code-runner
-        // CDN: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js
+        // CDN: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.1/dist/index.js
 
         // Example code snippets
         const examples = {
@@ -878,11 +878,11 @@ print("Sorted odd numbers:", table.concat(odd_numbers, ", "))`
         async function loadPackage() {
             try {
                 // Use the published package from CDN
-                const module = await import('https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js');
+                const module = await import('https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.1/dist/index.js');
                 runCodeFunction = module.runCode;
                 console.log('✅ Published package loaded successfully from CDN');
-                console.log('📦 Package version: 1.0.0');
-                console.log('🌐 CDN URL: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.0/dist/index.js');
+                console.log('📦 Package version: 1.0.1');
+                console.log('🌐 CDN URL: https://cdn.jsdelivr.net/npm/browser-code-runner@1.0.1/dist/index.js');
                 return true;
             } catch (error) {
                 console.error('❌ Failed to load published package:', error);
